@@ -3,8 +3,8 @@
 SCRIPT_DIR=$(realpath $(dirname ${BASH_SOURCE[0]}))
 PROJECT_BASE_DIR=$(realpath $SCRIPT_DIR/..)
 
-APP_NAME=blank
-CONTAINER_NAME=springing-struts1-$APP_NAME
+APP_NAME=struts-blank
+CONTAINER_NAME=springing-struts-$APP_NAME
 DOCKER=$((which podman &> /dev/null) && echo podman || echo docker)
 
 main() {
@@ -14,7 +14,18 @@ main() {
 
 build() {
   (cd $PROJECT_BASE_DIR
-    mvn clean package -U
+    mvn \
+      clean \
+      dependency:purge-local-repository \
+        -DreResolve=false \
+        -DactTransitively=false \
+        -DmanualInclude='springing-struts' \
+      package -U \
+      spring-boot:repackage \
+    && java \
+      -Djarmode=layertools \
+      -jar target/$APP_NAME-*.war \
+      extract --destination target/extracted
   )
 }
 
