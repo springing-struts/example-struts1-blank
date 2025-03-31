@@ -7,7 +7,7 @@ How to run
 - Run the following command.
 
 ```bash
-./scripts/deploy-local.sh
+./scripts/start.sh
 ```
 
 - Open the following URL with your browser.
